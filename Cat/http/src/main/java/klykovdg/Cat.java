@@ -1,39 +1,48 @@
 package klykovdg;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.*;
-import org.apache.http.HttpHeaders;
-import org.apache.http.client.config.*;
-import org.apache.http.client.methods.*;
-import org.apache.http.entity.ContentType;
-import org.apache.http.impl.client.*;
-import java.util.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Cat {
-    public static final ObjectMapper mapper = new ObjectMapper();
-    //    {
-    //        configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-    //    }
-    //};
+    private String id;
+    private String text;
+    private String type;
+    private String user;
+    private Integer upvotes;
 
-    public static void main(String[] args) throws Exception {
-        CloseableHttpClient httpClient = HttpClientBuilder.create()
-                .setDefaultRequestConfig(RequestConfig.custom()
-                        .setConnectTimeout(5000)
-                        .setSocketTimeout(30000)
-                        .setRedirectsEnabled(false)
-                        .build())
-                .build();
 
-        HttpGet request = new HttpGet("https://raw.githubusercontent.com/netology-code/jd-homeworks/master/http/task1/cats");
-        request.setHeader(HttpHeaders.ACCEPT, ContentType.APPLICATION_JSON.getMimeType());
+    public Cat(@JsonProperty("id") String id,
+               @JsonProperty("text") String text,
+               @JsonProperty("type") String type,
+               @JsonProperty("user") String user,
+               @JsonProperty("upvotes") Integer upvotes) {
+        this.id = id;
+        this.text = text;
+        this.type = type;
+        this.user = user;
+        this.upvotes = upvotes;
+    }
 
-        CloseableHttpResponse response = httpClient.execute(request);
-        Arrays.stream(response.getAllHeaders()).forEach(System.out::println);
+    public String getId() {
+        return id;
+    }
+    public String getText() {
+        return text;
+    }
+    public String getType() {
+        return type;
+    }
+    public String getUser() {
+        return user;
+    }
+    public Integer getUpvotes() {
+        return upvotes;
+    }
 
-        List<MyСonverter> cats = mapper.readValue(response.getEntity().getContent(), new TypeReference<List<MyСonverter>>() {});
-        cats.stream()
-                .filter(value -> value.getUpvotes() != null && value.getUpvotes() > 0)
-                .forEach(System.out::println);
+    public String toString() {
+        return "\n" + "id = " + id + "\n" +
+                "text = " + text + "\n" +
+                "type = " + type + "\n" +
+                "user = " + user + "\n" +
+                "upvotes = " + upvotes + "\n";
     }
 }
